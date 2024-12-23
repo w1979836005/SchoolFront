@@ -5,7 +5,7 @@
 <template>
   <div class="footer">
     <div class="footer-text">
-      <p class="text">作者:高桥凉介</p>
+      <p class="text">@author 作者:高桥凉介</p>
       <p class="text">少年不惧岁月长，心向远方自明朗</p>
     </div>
   </div>
@@ -14,7 +14,7 @@
 <style scoped>
 .footer{
   height: 70px;
-  background-color: #eaf4ea;
+  background-color: #b1b1b1;
 }
 .footer-text{
   padding: 15px;

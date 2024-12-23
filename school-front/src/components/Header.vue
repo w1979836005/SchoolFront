@@ -1,10 +1,52 @@
 <script setup lang="ts">
+/**
+ * 路由切换动态刷新
+ * @author 高桥凉介
+ */
 import { ref } from 'vue'
 
 const activeIndex = ref('1')
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
+
+/**
+ * 使用TS接口定义Header栏数据
+ * @author 高桥凉介
+ */
+import type{Header} from '../types'
+import {useRouter} from "vue-router";
+import SearchHeader from "@/components/SearchHeader.vue";
+const headerData: Header = {
+  title: "校园综合信息服务",
+  menu: [
+    { id: 1, label: "首页", link: "/" },
+    {
+      id: 2,
+      label: "校园",
+      link: "/solutions",
+      children: [
+        { id: 21, label: "校园活动", link: "/solutions/item-one" },
+        { id: 22, label: "最新咨询", link: "/solutions/item-two" },
+        { id: 23, label: "学习", link: "/solutions/item-three" },
+      ],
+    },
+    { id: 3, label: "动物", link: "/about" },
+    { id: 4, label: "有解", link: "/about" },
+    { id: 5, label: "关于", link: "/about" },
+  ],
+};
+
+
+/**
+ * 登录跳转函数
+ * @author 高桥凉介
+ */
+const routers = useRouter();
+function goLogin() {
+  routers.push("/login")
+}
+
 </script>
 
 <template>
@@ -21,20 +63,46 @@ const handleSelect = (key: string, keyPath: string[]) => {
           src="../assets/logo.png"
           alt="cat logo"
       />
-      <div class="mess">综合信息服务平台</div>
-      <el-menu-item class="startMenu" index="1">首页</el-menu-item>
-      <el-sub-menu class="menu" index="2">
-        <template #title>有解</template>
-        <el-menu-item index="2-1">item one</el-menu-item>
-        <el-menu-item index="2-2">item two</el-menu-item>
-        <el-menu-item index="2-3">item three</el-menu-item>
-      </el-sub-menu>
+      <div class="mess">{{headerData.title}}</div>
 
-      <el-menu-item class="menu" index="3">关于</el-menu-item>
+      <template v-for="item in headerData.menu">
+        <!-- 如果有子菜单 -->
+        <el-sub-menu
+            v-if="item.children && item.children.length > 0"
+            :key="item.id"
+            class="menu"
+            :index="item.id.toString()"
+        >
+          <template #title>{{ item.label }}</template>
+          <!-- 渲染子菜单 -->
+          <el-menu-item
+              v-for="child in item.children"
+              :key="child.id"
+              :index="child.id.toString()"
+          >
+            {{ child.label }}
+          </el-menu-item>
+        </el-sub-menu>
 
-      <el-menu-item class="login">
-        <a href="#"  style="text-decoration: none">登录</a>
-      </el-menu-item>
+        <!-- 如果没有子菜单 -->
+        <el-menu-item
+            v-else
+            class="menu"
+            :index="item.id.toString()"
+        >
+          {{ item.label }}
+        </el-menu-item>
+      </template>
+
+      <div class="search">
+        <SearchHeader/>
+      </div>
+
+      <el-button type="primary" class="login" @click="goLogin" round>
+          登录
+      </el-button>
+
+
     </el-menu>
   </div>
 </template>
@@ -57,9 +125,13 @@ const handleSelect = (key: string, keyPath: string[]) => {
 }
 .mess{
   margin-left: 1rem;
+  margin-right: 2rem;
   color: #615454;
 }
 .login{
-  margin-left: 700px;
+  margin-left: 10rem;
+}
+.search{
+  margin-left: 7rem;
 }
 </style>
